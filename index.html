@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Memory Studio | ບໍລິການຖ່າຍພາບແບບມືອາຊີບ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,700&family=Noto+Sans+Lao:wght@300;400;700&display=swap');
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --accent: #ffffff;
+            --text-muted: #a3a3a3;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--accent);
+            font-family: 'Inter', 'Noto Sans Lao', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, .logo {
+            font-family: 'Playfair Display', 'Noto Sans Lao', serif;
+        }
+
+        /* Gallery Item Styling */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            aspect-ratio: 4/5;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item.hidden-item {
+            display: none;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .gallery-item:hover .overlay {
+            opacity: 1;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(rgba(10, 10, 10, 0.4), rgba(10, 10, 10, 0.8)), 
+                        url('https://i.postimg.cc/HxR18MRf/471855964_122184935708133344_6972442437475650105_n.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .filter-btn.active {
+            color: white;
+            border-bottom: 2px solid white;
+        }
+
+        /* Lightbox Specific Styles */
+        #lightbox {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.95);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #lightbox img {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        #lightbox.active img {
+            transform: scale(1);
+        }
+
+        /* Custom styling for date input */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-lg border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="logo text-2xl tracking-tighter font-bold">The Memory Studio</div>
+            <ul class="hidden md:flex space-x-12 text-sm uppercase tracking-widest font-light">
+                <li><a href="#home" class="hover:text-neutral-400 transition italic">Home</a></li>
+                <li><a href="#work" class="hover:text-neutral-400 transition italic">Portfolio</a></li>
+                <li><a href="#about" class="hover:text-neutral-400 transition italic">Story</a></li>
+                <li><a href="#contact" class="hover:text-neutral-400 transition italic">Contact</a></li>
+            </ul>
+            <button class="md:hidden text-white" id="mobile-menu-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center text-center hero-gradient px-6">
+        <div class="max-w-4xl">
+            <h1 class="text-4xl md:text-9xl mb-8 italic leading-tight">ຮູບພາບ <br> ແຫ່ງຄວາມຊົງຈຳ.</h1>
+            <p class="text-lg md:text-2xl text-neutral-200 font-light mb-10 max-w-2xl mx-auto leading-relaxed">
+                ພວກເຮົາປ່ຽນຊ່ວງເວລາທີ່ລ້ຳຄ່າໃຫ້ເປັນຄວາມຊົງຈຳທີ່ບໍ່ມີວັນເລືອນລາງ ຜ່ານສິລະປະແຫ່ງການຖ່າຍພາບລະດັບພຣີມ່ຽມ.
+            </p>
+            <a href="#work" class="inline-block px-10 py-4 border border-white text-sm uppercase tracking-[0.3em] hover:bg-white hover:text-black transition duration-500 font-semibold">
+                Explore The Gallery
+            </a>
+        </div>
+    </section>
+
+    <!-- Work Gallery -->
+    <section id="work" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-baseline justify-between mb-20 gap-8">
+            <div class="flex flex-wrap items-baseline gap-6">
+                <h2 class="text-4xl md:text-6xl italic">ຜົນງານຂອງພວກເຮົາ</h2>
+                <span class="text-xl uppercase tracking-[0.4em] text-neutral-500 whitespace-nowrap">Curated Collections</span>
+            </div>
+            <div class="flex flex-wrap gap-6 text-xs md:text-sm text-neutral-400 uppercase tracking-widest" id="filter-container">
+                <button class="filter-btn active pb-1 transition cursor-pointer" data-filter="all">ທັງໝົດ</button>
+                <button class="filter-btn pb-1 transition cursor-pointer" data-filter="wedding">Wedding & Event</button>
+                <button class="filter-btn pb-1 transition cursor-pointer" data-filter="studio">Studio</button>
+                <button class="filter-btn pb-1 transition cursor-pointer" data-filter="restaurant">Restaurant</button>
+                <button class="filter-btn pb-1 transition cursor-pointer" data-filter="graduation">Graduation</button>
+                <button class="filter-btn pb-1 transition cursor-pointer" data-filter="tourist">Tourist Site</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10" id="gallery-grid">
+            
+            <!-- Wedding 1 -->
+            <div class="gallery-item group" data-category="wedding">
+                <img src="https://i.postimg.cc/hPF8twJH/H0A4994.jpg" alt="Wedding celebration">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Editorial Wedding</p>
+                        <h3 class="text-2xl italic font-light">The Grand Celebration</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wedding 2 -->
+            <div class="gallery-item group" data-category="wedding">
+                <img src="https://i.postimg.cc/tCw0rFgW/MOU05557.jpg" alt="Wedding Detail">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Detail Story</p>
+                        <h3 class="text-2xl italic font-light">Elegance in Bloom</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wedding 3 -->
+            <div class="gallery-item group" data-category="wedding">
+                <img src="https://i.postimg.cc/9QdWZ4Q3/H0A5132.jpg" alt="Wedding Portrait">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Cinematic Portrait</p>
+                        <h3 class="text-2xl italic font-light">Eternal Connection</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Studio -->
+            <div class="gallery-item group" data-category="studio">
+                <img src="https://i.postimg.cc/HxR18MRf/471855964_122184935708133344_6972442437475650105_n.jpg" alt="Studio portrait">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Minimalist Studio</p>
+                        <h3 class="text-2xl italic font-light">Modern Soul</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant -->
+            <div class="gallery-item group" data-category="restaurant">
+                <img src="https://i.postimg.cc/DyHVC1zX/MOU05343.jpg" alt="Restaurant photography">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Culinary Space</p>
+                        <h3 class="text-2xl italic font-light">The Atmosphere</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tourist Site -->
+            <div class="gallery-item group" data-category="tourist">
+                <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=1000" alt="Tourist Site">
+                <div class="overlay">
+                    <div class="w-full">
+                        <p class="text-xs uppercase tracking-widest mb-1 opacity-70">Destination</p>
+                        <h3 class="text-2xl italic font-light">Heritage Silence</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="bg-neutral-900 py-32 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
+            <div class="lg:w-1/2">
+                <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&q=80&w=1000" alt="Photographer at work" class="rounded-lg shadow-2xl grayscale hover:grayscale-0 transition duration-1000">
+            </div>
+            <div class="lg:w-1/2 space-y-8">
+                <span class="text-xs uppercase tracking-[0.4em] text-neutral-500 block">Our Philosophy</span>
+                <h2 class="text-5xl md:text-7xl italic leading-tight">ສ້າງສັນຜົນງານທີ່ເປັນຕຳນານ ຜ່ານມຸມມອງຂອງເຮົາ.</h2>
+                <p class="text-neutral-400 text-xl leading-relaxed">
+                    ທີ່ <strong>The Memory Studio</strong>, ພວກເຮົາບໍ່ພຽງແຕ່ຖ່າຍຮູບ, ແຕ່ພວກເຮົາບັນທຶກຄວາມຮູ້ສຶກ ແລະ ເເລື່ອງລາວທີ່ຢູ່ເບື້ອງຫຼັງແຕ່ລະເຟຣມ. ດ້ວຍປະສົບການທີ່ຫຼາກຫຼາຍ ຕັ້ງແຕ່ງານແຕ່ງດອງທີ່ເຕັມໄປດ້ວຍຄວາມສຸກ ຈົນເຖິງການຖ່າຍພາບສະຖາປັດຕະຍະກຳທີ່ຊັບຊ້ອນ.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6 max-w-5xl mx-auto text-center">
+        <span class="text-xs uppercase tracking-[0.4em] text-neutral-500 block mb-4">Get In Touch</span>
+        <h2 class="text-5xl md:text-8xl italic mb-12">ມາສ້າງຄວາມຊົງຈຳນຳກັນ.</h2>
+        
+        <form id="whatsappForm" class="space-y-10 text-left">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="relative">
+                    <label class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Full Name / ຊື່ ແລະ ນາມສະກຸນ</label>
+                    <input type="text" id="formName" placeholder="Enter your name" required class="bg-transparent border-b border-neutral-700 py-4 px-1 focus:border-white outline-none transition w-full placeholder:text-neutral-800">
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Phone Number / ເບີໂທລະສັບ</label>
+                    <input type="tel" id="formPhone" placeholder="Ex: 20 5484 9393" required class="bg-transparent border-b border-neutral-700 py-4 px-1 focus:border-white outline-none transition w-full placeholder:text-neutral-800">
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Type of Event / ປະເພດງານ</label>
+                    <select id="formEventType" required class="bg-transparent border-b border-neutral-700 py-4 px-1 focus:border-white outline-none transition w-full text-neutral-400 appearance-none">
+                        <option value="" disabled selected>ເລືອກປະເພດງານ</option>
+                        <option value="Wedding & Event">Wedding & Event</option>
+                        <option value="Studio Session">Studio Session</option>
+                        <option value="Restaurant">Restaurant</option>
+                        <option value="Graduation">Graduation</option>
+                        <option value="Tourist Site">Tourist Site</option>
+                    </select>
+                </div>
+                <div class="relative">
+                    <label class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Date of Event / ວັນທີຈັດງານ</label>
+                    <input type="date" id="formDate" required class="bg-transparent border-b border-neutral-700 py-4 px-1 focus:border-white outline-none transition w-full text-neutral-400">
+                </div>
+                <div class="relative md:col-span-2 lg:col-span-2">
+                    <label class="text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">Venue Location / ສະຖານທີ່ (ໂຮງແຮມ ຫຼື ອື່ນໆ)</label>
+                    <input type="text" id="formLocation" placeholder="Ex: Landmark Hotel, Vientiane" required class="bg-transparent border-b border-neutral-700 py-4 px-1 focus:border-white outline-none transition w-full placeholder:text-neutral-800">
+                </div>
+            </div>
+            
+            <button type="submit" class="w-full py-6 bg-white text-black text-sm uppercase tracking-[0.4em] font-bold hover:bg-neutral-200 transition-all duration-300">
+                Submit Inquiry (WhatsApp)
+            </button>
+            <p class="text-center text-[10px] text-neutral-500 uppercase tracking-widest mt-4 italic">
+                Securely redirects to WhatsApp: 856 20 5484 9393
+            </p>
+        </form>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" onclick="this.classList.remove('active')">
+        <button class="absolute top-8 right-8 text-white text-3xl focus:outline-none" aria-label="Close Lightbox">&times;</button>
+        <img id="lightbox-img" src="" alt="Full size image preview">
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-20 px-6 border-t border-white/5 bg-black">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+            <div class="logo text-3xl">The Memory Studio</div>
+            <div class="flex space-x-12 text-neutral-500 text-sm tracking-widest">
+                <a href="#" class="hover:text-white transition italic">Instagram</a>
+                <a href="#" class="hover:text-white transition italic">Vimeo</a>
+                <a href="#" class="hover:text-white transition italic">Behance</a>
+            </div>
+            <p class="text-neutral-500 text-xs uppercase tracking-[0.2em]">
+                &copy; 2026 The Memory Studio. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Gallery Filtering Logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                galleryItems.forEach(item => {
+                    const category = item.getAttribute('data-category');
+                    
+                    if (filter === 'all' || category === filter) {
+                        item.classList.remove('hidden-item');
+                        requestAnimationFrame(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        });
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.98)';
+                        setTimeout(() => {
+                            if (btn.getAttribute('data-filter') !== 'all' && category !== btn.getAttribute('data-filter')) {
+                                item.classList.add('hidden-item');
+                            }
+                        }, 400);
+                    }
+                });
+            });
+        });
+
+        // Lightbox Logic
+        galleryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+            });
+        });
+
+        // WhatsApp Form Handling
+        const whatsappForm = document.getElementById('whatsappForm');
+        whatsappForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('formName').value;
+            const phone = document.getElementById('formPhone').value;
+            const eventType = document.getElementById('formEventType').value;
+            const date = document.getElementById('formDate').value;
+            const location = document.getElementById('formLocation').value;
+            const studioPhone = "8562054849393";
+            
+            const message = `Sabaidee! I'm interested in booking The Memory Studio.\n\n` +
+                            `• Full Name: ${name}\n` +
+                            `• Phone: ${phone}\n` +
+                            `• Event Type: ${eventType}\n` +
+                            `• Date of Event: ${date}\n` +
+                            `• Venue/Location: ${location}\n\n` +
+                            `Please let me know your availability and rates. Thank you!`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${studioPhone}?text=${encodedMessage}`, '_blank');
+        });
+
+        // Mobile menu placeholder
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        mobileBtn.addEventListener('click', () => {
+            console.log("Navigation toggle");
+        });
+    </script>
+</body>
+</html>
