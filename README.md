@@ -44,7 +44,7 @@ Tourist Sites
 
 Immersive Lightbox: A professional "click-to-enlarge" feature that allows clients to view your high-resolution shots in full-screen mode.
 
-WhatsApp Booking Integration: A seamless contact form that converts user data (Name, Phone, Event Date, Location) into a pre-formatted message sent directly to your WhatsApp (+856 20 5484 9393).
+WhatsApp Booking Integration: A seamless contact form that converts user data (Name, Phone, Event Type, Date, Location) into a pre-formatted message sent directly to your WhatsApp (+856 20 5484 9393).
 
 Mobile-First Design: Optimized for smooth performance on smartphones and tablets, ensuring a premium experience on any device.
 
